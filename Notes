@@ -1,0 +1,115 @@
+collection = files
+data/document/records 
+
+// Show all existing databases
+show dbs
+
+// Switch to a new database or create it if it doesn't exist
+use newDatabaseName
+
+// Create new collections inside the current database
+db.createCollection("Students")
+db.createCollection("personal")
+
+// Show all collections in the current database
+show collections
+
+// Insert a single document into the 'Students' collection
+db.Students.insertOne({
+  "name": "John Doe",        // Student's name
+  "age": 22,                 // Student's age
+  "course": "Computer Science" // Student's enrolled course
+})
+
+// Insert another document with more fields
+db.Students.insertOne({
+  "name": "Alice",
+  "age": 20,
+  "course": "Mathematics",
+  "enrolled": true           // Boolean field showing if student is enrolled
+})
+
+// Insert multiple documents at once into 'Students' collection
+db.Students.insertMany([
+
+  { "name": "Bob", "age": 23 },
+  { "name": "Carol", "age": 21 }
+
+])
+
+// Query all documents inside the 'Students' collection
+db.Students.find()
+
+json schema validation
+
+db.createCollection("Studnets" , {
+    
+    validator: {
+        $jsonSchema: {
+            required: ["name", "age"],title: "Student validation",
+            properties: {
+                name: {
+                    bsonType : "string",
+                    enum:["ifrah"] //means name should be ifrah predefined values
+                    description: "must be a string and is required"
+                },
+                age: {
+                    bsonType: "int",
+                    minimum:5,
+                    maximum:20,
+                    description: "age must be an integer between 5 and 20"
+                }
+            }
+        }
+    }
+})
+// ---------------------------------------------------------------------------------------
+// modify an existing command
+
+db.runCommand( {
+    colMod:"Students",
+    validator: {
+        $jsonSchema: {
+            required: ["name", "age"],title: "Student validation",
+            properties: {
+                name: {
+                    bsonType : "string",
+                    description: "must be a string and is required"
+                },
+                age: {
+                    bsonType: "int",
+                    minimum:5,
+                    maximum:20,
+                    description: "age must be an integer between 5 and 20"
+                }
+                
+            }
+        }
+    }
+})
+// ---------------------------------------------------------------------------------------
+// UPDATE COMMAND
+
+db.collection.updateOne(
+{field:"value"},
+{$set:{updated_field:"new_Value"}}
+
+)
+
+db.Students.updateOne(
+{name:"ambar"},
+{$set:{age:19}} //if ambar have age 20 it will update to 19
+
+)
+
+db.Students.updateOne(  //it means it will update the very first on having CS
+    {course: "CS"}
+    {$set :{age:19}}
+)
+
+db.Students.updateMany(
+    {course : "CS"},	
+    {$set : {age:17}}
+)
+
+
